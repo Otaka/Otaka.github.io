@@ -1,5 +1,101 @@
+<!doctype html>
 <html>
-<body>
-Hello world
-</body>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+		.btn {
+			font-size: 1em;
+			color: #dcdcdc;
+			min-height: 45px;
+			padding: 0 10px;
+			border-radius: 2px;
+			border: 1px solid #b5b5b5;
+			background-color: #616161;
+			margin: 2px;
+			line-height: 45px;
+		}
+		.noselect {
+		  -webkit-touch-callout: none; /* iOS Safari */
+			-webkit-user-select: none; /* Safari */
+			 -khtml-user-select: none; /* Konqueror HTML */
+			   -moz-user-select: none; /* Old versions of Firefox */
+				-ms-user-select: none; /* Internet Explorer/Edge */
+					user-select: none; /* Non-prefixed version, currently
+										  supported by Chrome, Edge, Opera and Firefox */
+		}
+		</style>
+		<script>
+			var syllables=["ав","аз","ай","ак","ап","ат","ба","бан","бе","би","бо","буй","бы","бь","бя","ва","ве",
+				"ви","во","вос","вы","вя","вё","га","гас","ге","ги","го","гу","да","де","ди","дли","до",
+				"ду","ды","дь","дэ","ей","ем","ер","ет","жа","же","жи","жу","за","зве","зд","зе","зи","зу",
+				"зун","зя","ив","из","ил","ин","ир","йо","ка","ке","ки","ким","ко","кра","кро","кры","ку",
+				"куш","ла","лас","ле","лев","лен","лес","ли","лик","ло","лу","ль","лю","лё","ма","маш","ме",
+				"ми","мо","му","мё","на","над","нау","не","ни","ний","нны","но","ной","ны","нь","ня",
+				"об","од","ож","ой","ок","ол","ом","па","пе","пи","по","пти","пу","пя","пё","ра","раз",
+				"рд","ре","ри","ро","рот","ру","ры","рый","рь","ря","рё","са","се","со","сой","ст","су",
+				"сь","ся","сё","та","ти","то","том","точ","ты","тым","ть","у","уб","ув","уж","уз","ум","фи",
+				"хи","хит","хо","хом","ца","ча","чай","че","чи","ша","ше","ши","шис","шо","ще","щу","ый",
+				"эй","ёд","ёл","ён"];
+			var trueFalse=[true, false]
+			var fonts=["Fira Sans","Arial","Times New Roman","Georgia","Courier New"];
+			var colors=["black","red","green","blue", "grey"];
+			
+			function getRandomElement(arr){
+				return arr[Math.floor(Math.random()*arr.length)]
+			}
+
+			function randomCase(str){
+				switch(getRandomElement(["aa","AA","Ab"])){
+					case "aa":return str.toLowerCase();
+					case "AA":return str.toUpperCase();
+					case "Ab":return str.substring(0,1).toUpperCase()+str.substring(1).toLowerCase()
+					default:alert("error");
+				}
+				Math.floor(Math.random()*3);
+			}
+			
+			function getNextSyllable(charsCount){
+				var arr=syllables.filter(function(syl) {return syl.length == charsCount;});
+				var syllable = randomCase(getRandomElement(arr));
+				return syllable;
+			}
+			
+			function changeFont(element, name) {
+				element.style.fontFamily = name;
+			}
+			
+			function setItalic(element, isItalic){
+				element.style.fontStyle =isItalic?"italic":"";
+			}
+			
+			function setColor(element, color){
+				element.style.color = color;
+			}
+			function applyRandomStyle(element){
+				changeFont(element, getRandomElement(fonts));
+				setItalic(element, getRandomElement(trueFalse));
+				setColor(element, getRandomElement(colors));
+			}
+
+			function nextWord(charsCount){
+				var element=document.getElementById("word");
+				element.innerHTML=getNextSyllable(charsCount);
+				applyRandomStyle(element);
+			}
+			
+		</script>
+	</head>
+	<body onload="nextWord(2)">
+	<div style="height:90vh; display: flex;justify-content:center;align-items:center;flex-wrap: wrap;">		
+		<div>
+			<div id="word" style='font: 8em "Fira Sans", sans-serif;'></div>
+			
+			<div style="height:50px"></div>
+			
+			<div style="margin: 0 auto;width:60px" class="btn noselect" onclick="nextWord(2)">2 Буквы</div>
+			<div style="height:50px"></div>
+			<div style="margin: 0 auto;width:60px" class="btn noselect" onclick="nextWord(3)">3 Буквы</div>
+		</div>
+	</div>
+	</body>
 </html>

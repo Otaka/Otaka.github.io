@@ -36,9 +36,12 @@
 				"сь","ся","сё","та","ти","то","том","точ","ты","тым","ть","у","уб","ув","уж","уз","ум","фи",
 				"хи","хит","хо","хом","ца","ча","чай","че","чи","ша","ше","ши","шис","шо","ще","щу","ый",
 				"эй","ёд","ёл","ён"];
-			var trueFalse=[true, false]
+				
+			var currentWord=syllables[0];
 			var fonts=["Fira Sans","Arial","Times New Roman","Georgia","Courier New"];
 			var colors=["black","red","green","blue", "grey"];
+			
+			
 			
 			function getRandomElement(arr){
 				return arr[Math.floor(Math.random()*arr.length)]
@@ -65,7 +68,7 @@
 			}
 			
 			function setItalic(element, isItalic){
-				element.style.fontStyle =isItalic?"italic":"";
+				element.style.fontStyle = isItalic? "italic":"";
 			}
 			
 			function setColor(element, color){
@@ -73,14 +76,24 @@
 			}
 			function applyRandomStyle(element){
 				changeFont(element, getRandomElement(fonts));
-				setItalic(element, getRandomElement(trueFalse));
+				setItalic(element, getRandomElement([true, false]));
 				setColor(element, getRandomElement(colors));
 			}
 
 			function nextWord(charsCount){
+				currentWord=getNextSyllable(charsCount);
+				printWord(currentWord);
+			}
+			
+			function printWord(word){
 				var element=document.getElementById("word");
-				element.innerHTML=getNextSyllable(charsCount);
+				element.innerHTML=word;
 				applyRandomStyle(element);
+			}
+			
+			function reverseWord(){
+				currentWord=randomCase(currentWord.split("").reverse().join(""));
+				printWord(currentWord);
 			}
 			
 		</script>
@@ -90,11 +103,21 @@
 		<div>
 			<div id="word" style='font: 8em "Fira Sans", sans-serif;'></div>
 			
-			<div style="height:50px"></div>
-			
-			<div style="margin: 0 auto;width:60px" class="btn noselect" onclick="nextWord(2)">2 Буквы</div>
-			<div style="height:50px"></div>
-			<div style="margin: 0 auto;width:60px" class="btn noselect" onclick="nextWord(3)">3 Буквы</div>
+			<table style="width:300px">
+				<tr>
+					<td>
+						<div style="margin: 0 auto;width:60px"  class="btn noselect" onclick="nextWord(2)">2 Буквы</div>
+					</td>
+					<td>
+						<div style="margin: 0 auto;width:60px" class="btn noselect" onclick="reverseWord()">Наоборот</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div style="margin: 0 auto;width:60px" class="btn noselect" onclick="nextWord(3)">3 Буквы</div>
+					</td>
+				</tr>
+			</table>
 		</div>
 	</div>
 	</body>

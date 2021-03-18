@@ -22,10 +22,47 @@
 				-ms-user-select: none; /* Internet Explorer/Edge */
 					user-select: none; /* Non-prefixed version, currently
 										  supported by Chrome, Edge, Opera and Firefox */
+										  
+		}						  
+		.modal {
+		  display: none; /* Hidden by default */
+		  position: fixed; /* Stay in place */
+		  z-index: 1; /* Sit on top */
+		  left: 0;
+		  top: 0;
+		  width: 100%; /* Full width */
+		  height: 100%; /* Full height */
+		  overflow: auto; /* Enable scroll if needed */
+		  background-color: rgb(0,0,0); /* Fallback color */
+		  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+		}
+
+		/* Modal Content/Box */
+		.modal-content {
+		  background-color: #fefefe;
+		  margin: 15% auto; /* 15% from the top and centered */
+		  padding: 20px;
+		  border: 1px solid #888;
+		  width: 80%; /* Could be more or less, depending on screen size */
+		}
+
+		/* The Close Button */
+		.close {
+		  color: #aaa;
+		  float: right;
+		  font-size: 28px;
+		  font-weight: bold;
+		}
+
+		.close:hover,
+		.close:focus {
+		  color: black;
+		  text-decoration: none;
+		  cursor: pointer;
 		}
 		</style>
 		<script>
-			var syllables=["ав","аз","ай","ак","ап","ат","ба","бан","бе","би","бо","буй","бы","бь","бя","ва","ве",
+			var defaultSyllables=["ав","аз","ай","ак","ап","ат","ба","бан","бе","би","бо","буй","бы","бь","бя","ва","ве",
 				"ви","во","вос","вы","вя","вё","га","гас","ге","ги","го","гу","да","де","ди","дли","до",
 				"ду","ды","дь","дэ","ей","ем","ер","ет","жа","же","жи","жу","за","зве","зд","зе","зи","зу",
 				"зун","зя","ив","из","ил","ин","ир","йо","ка","ке","ки","ким","ко","кра","кро","кры","ку",
@@ -37,11 +74,23 @@
 				"хи","хит","хо","хом","ца","ча","чай","че","чи","ша","ше","ши","шис","шо","ще","щу","ый",
 				"эй","ёд","ёл","ён"];
 				
-			var currentWord=syllables[0];
-			var fonts=["Fira Sans","Arial","Times New Roman","Georgia","Courier New"];
-			var colors=["black","red","green","blue", "grey"];
 			
 			
+			function init(){
+				var syllablesString = localStorage.getItem("syl");
+				if(syllablesString===undefined || syllablesString===null||syllablesString.length==0){
+					syllables=defaultSyllables;
+				}else{
+					syllables=syllablesString.split(" ");
+					if(syllables.length==0){
+						syllables=["EMTPY"]
+					}
+				}
+				
+				fonts=["Fira Sans","Arial","Times New Roman","Georgia","Courier New"];
+				colors=["black","red","green","blue", "grey"];
+				nextWord();
+			}
 			
 			function getRandomElement(arr){
 				return arr[Math.floor(Math.random()*arr.length)]
@@ -57,9 +106,9 @@
 				Math.floor(Math.random()*3);
 			}
 			
-			function getNextSyllable(charsCount){
-				var arr=syllables.filter(function(syl) {return syl.length == charsCount;});
-				var syllable = randomCase(getRandomElement(arr));
+			function getNextSyllable(){
+				//var arr=syllables.filter(function(syl) {return syl.length == charsCount;});
+				var syllable = randomCase(getRandomElement(syllables));
 				return syllable;
 			}
 			
@@ -80,8 +129,8 @@
 				setColor(element, getRandomElement(colors));
 			}
 
-			function nextWord(charsCount){
-				currentWord=getNextSyllable(charsCount);
+			function nextWord(){
+				currentWord=getNextSyllable();
 				printWord(currentWord);
 			}
 			
@@ -98,27 +147,84 @@
 			
 		</script>
 	</head>
-	<body onload="nextWord(2)">
+	<body onload="init()">
 	<div style="height:90vh; display: flex;justify-content:center;align-items:center;flex-wrap: wrap;">		
 		<div>
+			<button id="openEditButton">Edit words</button>
+
+			<!-- The Modal -->
+			<div id="wordEditDialog" class="modal">
+
+			  <!-- Modal content -->
+			  <div class="modal-content">
+				<span class="close">Close</span>
+				<div>
+					<textarea id="syllablesEditArea" name="textarea" style="width:100%;height:90%;"></textarea>
+				</div>
+					<button id="saveButton">Save</button>
+			  </div>
+
+			</div>
+			
 			<div id="word" style='font: 8em "Fira Sans", sans-serif;'></div>
 			
 			<table style="width:300px">
 				<tr>
 					<td>
-						<div style="margin: 0 auto;width:60px"  class="btn noselect" onclick="nextWord(2)">2 Буквы</div>
+						<div style="margin: 0 auto;width:60px"  class="btn noselect" onclick="nextWord(2)">Далее</div>
 					</td>
 					<td>
 						<div style="margin: 0 auto;width:60px" class="btn noselect" onclick="reverseWord()">Наоборот</div>
 					</td>
 				</tr>
-				<tr>
-					<td>
-						<div style="margin: 0 auto;width:60px" class="btn noselect" onclick="nextWord(3)">3 Буквы</div>
-					</td>
-				</tr>
 			</table>
 		</div>
 	</div>
+	<script>
+	var modal = document.getElementById("wordEditDialog");
+
+	// Get the button that opens the modal
+	var btn = document.getElementById("openEditButton");
+
+	// Get the <span> element that closes the modal
+	var span = document.getElementsByClassName("close")[0];
+
+	// When the user clicks on the button, open the modal
+	
+	// When the user clicks on <span> (x), close the modal
+	function closeEditDialog(){
+		modal.style.display = "none";
+	}
+	
+	function openEditDialog(){
+		modal.style.display = "block";
+	}
+	
+	btn.onclick = function() {
+		var savedText=localStorage.getItem('syl');
+		syllablesEditArea.value=savedText;
+		
+		openEditDialog();
+	}
+
+	span.onclick = function() {
+	  closeEditDialog();
+	}
+	
+	var saveButton=document.getElementById("saveButton");
+	saveButton.onclick = function() {
+	  var syllables=syllablesEditArea.value;
+	  localStorage.setItem('syl', syllables);
+	  init();
+	  closeEditDialog();
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	/*window.onclick = function(event) {
+	  if (event.target == modal) {
+		modal.style.display = "none";
+	  }
+	}*/
+	</script>
 	</body>
 </html>
